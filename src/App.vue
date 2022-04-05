@@ -2,8 +2,8 @@
   <div id="app">
     <Header/>
     <router-view></router-view>
-    <Footer/>
     <PlayerBar ></PlayerBar>
+    <Footer/>
   </div>
 </template>
 
@@ -24,4 +24,15 @@ export default {
 
 <style>
 @import './assets/styles/reset.css';
+@keyframes play {
+	0% {
+		-webkit-transform: translateY(0);
+		transform: translateY(0)
+	}
+
+	to {
+		-webkit-transform: translateY(85%);
+		transform: translateY(85%)
+	}
+}
 </style>

@@ -1,6 +1,7 @@
 import * as types from './mutation-type'
 import { playMode } from '@/common/playConfig'
 import utils from '@/utils/utils'
+import { saveSearch, deleteSearch, clearSearch, saveHistory, deleteHistory, clearHistory } from '@/common/cache'
 
 function findIndex(list, song) {
     // findIndex()方法返回数组中满足提供的测试函数的第一个元素的索引。若没有找到对应元素则返回-1
@@ -27,4 +28,19 @@ export const selectPlay = function({ commit, state }, { list, index }) {
 // 暂停播放
 export const pausePlay = function({ commit }) {
     commit(types.SET_PLAYING_STATE, false)
+}
+
+// 设置最近播放歌曲
+export const saveHistoryList = function({ commit }, song) {
+    commit(types.SET_HISTORY_LIST, saveHistory(song))
+}
+
+// 移除最近播放歌曲(单个)
+export const deleteHistoryList = function({ commit }, song) {
+    commit(types.SET_HISTORY_LIST, deleteHistory(song))
+}
+
+// 移除全部最近播放
+export const clearHistoryList = function({ commit }) {
+    commit(types.SET_HISTORY_LIST, clearHistory())
 }

@@ -2,21 +2,35 @@
   <div>
     <h2 class="title">推荐单曲</h2>
     <div class="list clearfix">
-      <div class="item" v-for="(item, index) in songs" :key="item.id">
-        <div class="bgImg">
-          <img :src="item.image + '?param=200y200'" />
-          <img
-            class="playIcon"
-            src="./images/播放 (2).png"
+      <div
+        class="item"
+        v-for="(item, index) in songs"
+        :key="item.id"
+        :class="
+          index == currentIndex && currentSong.id == item.id && playing
+            ? 'playing'
+            : ''
+        "
+      >
+        <div class="index-container">
+          <div class="bgImg">
+            <img :src="item.image + '?param=200y200'" />
+          </div>
+          <div class="playing-icon">
+            <div class="line" style="animation-delay: -1.2s"></div>
+            <div class="line"></div>
+            <div class="line" style="animation-delay: -1.5s"></div>
+            <div class="line" style="animation-delay: -0.9s"></div>
+            <div class="line" style="animation-delay: -0.6s"></div>
+          </div>
+          <i
+            class="iconfont icon-bofang1 play-btn"
             @click="playSong(item, index)"
-            v-show="!playing || currentIndex !== index"
-          />
-          <img
-            class="playIcon"
-            src="./images/暂停.png"
+          ></i>
+          <i
+            class="iconfont icon-zanting1 pause-btn"
             @click="pauseSong(item, index)"
-            v-show="currentIndex == index && playing"
-          />
+          ></i>
         </div>
         <div class="info">
           <h5>{{ item.name }}</h5>
@@ -122,32 +136,86 @@ export default {
   height: 80px;
   margin: 0 25px 25px 25px;
 }
-.bgImg,
+.index-container,
 .info {
   float: left;
   margin-right: 20px;
 }
-.bgImg {
+.index-container {
   width: 70px;
   height: 70px;
   position: relative;
 }
-.bgImg img {
-  position: absolute;
+.bgImg {
   width: 70px;
   height: 70px;
-}
-.bgImg .playIcon {
   position: absolute;
-  width: 30px;
-  height: 30px;
-  display: none;
-  top: 50%;
-  margin-top: -15px;
-  left: 50%;
-  margin-left: -15px;
+  border-radius: 4px;
 }
-.item:hover .playIcon {
+.bgImg img {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+}
+.bgImg::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0);
+  -webkit-transition: all 0.15s;
+  transition: all 0.15s;
+  border-radius: 4px;
+}
+.index-container .play-btn,
+.index-container .pause-btn {
+  line-height: 70px;
+  color: red;
+  font-size: 35px;
+  display: none;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+}
+.index-container .playing-icon {
+  display: none;
+  height: 16px;
+  width: 20px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  margin-left: 25px;
+  margin-top: 27px;
+}
+.playing-icon .line {
+  width: 2px;
+  height: 100%;
+  margin-left: 2px;
+  background-color: #ff410f;
+  animation: play 0.9s linear infinite alternate;
+}
+.playing .index-container .play-btn {
+  display: none;
+}
+.playing .index-container .playing-icon {
+  display: flex;
+}
+
+.item:hover .bgImg::after {
+  background: rgba(0, 0, 0, 0.5);
+}
+.item:hover .play-btn {
+  display: block;
+}
+.playing:hover .play-btn {
+  display: none;
+}
+.playing:hover .playing-icon {
+  display: none;
+}
+.playing:hover .pause-btn {
   display: block;
 }
 .info {

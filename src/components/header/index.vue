@@ -2,7 +2,7 @@
   <div class="header">
     <div class="container">
       <div class="logo">
-        <a href="#"></a>
+        <router-link :to="{ name: 'home' }"></router-link>
       </div>
       <div class="nav">
         <ul>
@@ -23,7 +23,10 @@
           </li>
         </ul>
       </div>
-      <div class="userbox">登录</div>
+      <div class="userbox">
+        <div class="is-login" v-if="loginState">已登录</div>
+        <div class="no-login" v-else>登录</div>
+      </div>
       <div class="line"></div>
       <div class="search iconfont icon-sousuo"></div>
     </div>
@@ -33,6 +36,11 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      loginState: false,
+    };
+  },
 };
 </script>
 
@@ -93,6 +101,27 @@ export default {
   height: 20px;
   line-height: 20px;
   padding: 0 15px;
+  text-decoration: none;
+  position: relative;
+}
+li .router-link-active {
+  color: red !important;
+}
+li .router-link-active::after {
+  content: "";
+  position: absolute;
+  background: red;
+  left: 0;
+  right: 0;
+  bottom: -12px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  margin: 0 auto;
+  opacity: 1;
+}
+li a:hover {
+  color: #fa2800;
 }
 
 .search,

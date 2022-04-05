@@ -100,7 +100,10 @@
                   @click="changePlayMode"
                 ></i>
                 <i class="iconfont icon-geciweidianji" @click="openLyric"></i>
-                <i class="iconfont icon-24gl-playlistMusic5"></i>
+                <i
+                  class="iconfont icon-24gl-playlistMusic5"
+                  @click="openList"
+                ></i>
               </div>
             </div>
           </div>
@@ -159,8 +162,63 @@
           </div>
         </div>
       </transition>
+      <!-- 播放列表界面 -->
+      <transition name="slide-fade">
+        <el-card class="list-box" v-if="showPlaylist">
+          <div slot="header" class="clearfix">
+            <h2
+              style="float: left; width: 100px; height: 30px; line-height: 30px"
+            >
+              播放列表
+            </h2>
+            <div style="float: right; font-size: 16px">
+              <i
+                style="font-size: 24px"
+                class="iconfont icon-shanchu"
+                alt="清空"
+                title="清空"
+                @click="clearHistory"
+              ></i>
+            </div>
+          </div>
+          <div class="list">
+            <div
+              class="item clearfix"
+              v-for="(item, index) in historyList"
+              :key="item.id"
+              :class="currentSong.id == item.id && playing ? 'playing' : ''"
+            >
+              <div class="index-container">
+                <span class="num">{{ num(index + 1) }}</span>
+                <div class="playing-icon">
+                  <div class="line" style="animation-delay: -1.2s"></div>
+                  <div class="line"></div>
+                  <div class="line" style="animation-delay: -1.5s"></div>
+                  <div class="line" style="animation-delay: -0.9s"></div>
+                  <div class="line" style="animation-delay: -0.6s"></div>
+                </div>
+                <i
+                  class="iconfont icon-bofang1 play-btn"
+                  @click="playSong(item, index)"
+                ></i>
+                <i
+                  class="iconfont icon-zanting1 pause-btn"
+                  @click="pauseSong(item, index)"
+                ></i>
+              </div>
+              <p class="ellipsis">{{ item.name }}</p>
+              <div class="del-icon">
+                <i
+                  class="iconfont icon-chacha"
+                  @click="deleteHistoryItem(item, index)"
+                ></i>
+              </div>
+            </div>
+          </div>
+        </el-card>
+      </transition>
     </div>
-    </transition>
+  </transition>
 </template>
 
 <script>
@@ -199,6 +257,7 @@ export default {
       isPureMusic: false,
       // 纯音乐的歌词
       pureMusicLyric: "",
+      showPlaylist: false,
     };
   },
   computed: {
@@ -250,7 +309,7 @@ export default {
           audio.src = newSong.url;
           audio.volume = this.volume;
           audio.play();
-          // this.saveHistoryList(newSong);
+          this.saveHistoryList(newSong);
           this.id = newSong.id;
         }
       });
@@ -275,6 +334,29 @@ export default {
     },
   },
   methods: {
+    num(num) {
+      if (num < 10) {
+        return "0" + num;
+      }
+      return num;
+    },
+    // 移除最近播放单曲
+    deleteHistoryItem(item, index) {
+      this.deleteHistoryList(item);
+    },
+    playSong(item, index) {
+      this.selectPlay({
+        list: this.historyList,
+        index,
+      });
+    },
+    pauseSong() {
+      this.pausePlay();
+    },
+    // 清除记录
+    clearHistory() {
+      this.clearHistoryList();
+    },
     formatTooltip(val) {
       return this.utils.formatSecondTime(
         (val * this.currentSong.duration) / 100
@@ -445,6 +527,9 @@ export default {
     // 展开歌词界面
     openLyric() {
       this.showLyric = !this.showLyric;
+    },
+    openList() {
+      this.showPlaylist = !this.showPlaylist;
     },
     // 播放结束 单曲循环或者自动切换下一首
     audioEnd() {
@@ -700,5 +785,92 @@ export default {
   overflow: hidden;
   background: #f8f9ff;
   margin-top: 30px;
+}
+.list-box {
+  width: 315px;
+  height: 450px;
+  position: fixed;
+  right: 10px;
+  bottom: 80px;
+}
+.item {
+  font-size: 14px;
+  height: 30px;
+  margin: 5px 0;
+}
+.index-container {
+  float: left;
+  width: 30px;
+  height: 100%;
+  position: relative;
+  line-height: 30px;
+  text-align: center;
+  margin-right: 10px;
+}
+.index-container .play-btn,
+.index-container .pause-btn {
+  line-height: 30px;
+  color: red;
+  font-size: 30px;
+  display: none;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+}
+.index-container .playing-icon {
+  display: none;
+  height: 16px;
+  width: 20px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  margin-left: 5px;
+  margin-top: 7px;
+}
+.playing-icon .line {
+  width: 2px;
+  height: 100%;
+  margin-left: 2px;
+  background-color: #ff410f;
+  animation: play 0.9s linear infinite alternate;
+}
+.playing .index-container .play-btn {
+  display: none;
+}
+.playing .index-container .playing-icon {
+  display: flex;
+}
+.item:hover .play-btn {
+  display: block;
+}
+.playing .num {
+  display: none;
+}
+.playing:hover .play-btn {
+  display: none;
+}
+.playing:hover .playing-icon {
+  display: none;
+}
+.playing:hover .pause-btn {
+  display: block;
+}
+
+.item p {
+  font-size: 14px;
+  line-height: 30px;
+  width: 150px;
+  height: 100%;
+  float: left;
+}
+.item .del-icon {
+  line-height: 30px;
+  width: 30px;
+  height: 100%;
+  float: right;
+}
+.item:hover .num {
+  display: none;
 }
 </style>

@@ -58,11 +58,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="singer"
-            label="歌手"
-            width="250"
-          ></el-table-column>
+          <el-table-column label="歌手" width="250"
+            ><template slot-scope="{ row }">
+              <p class="singer ellipsis">{{ row.name }}</p>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="album"
             label="专辑"
@@ -254,6 +254,7 @@ export default {
   width: 1200px;
   height: 100%;
   margin: 0 auto;
+  padding-top: 75px;
 }
 .img {
   float: left;
