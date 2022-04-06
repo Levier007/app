@@ -57,3 +57,8 @@ export const getCommentPlaylist = params => api.get(`/comment/playlist`, { param
  * @method 获取歌词
  */
 export const getLyric = id => api.get(`/lyric?id=${id}`)
+
+/**
+ * @method 获取排行榜内容摘要
+ */
+export const getToplist = () => api.get(`/toplist/detail`)

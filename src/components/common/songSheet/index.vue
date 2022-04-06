@@ -2,7 +2,7 @@
   <li class="item">
     <div class="bgImg">
       <img
-        :src="item.picUrl + '?param=200y200'"
+        :src="item.picUrl || item.coverImgUrl + '?param=200y200'"
         :alt="item.name"
         style="width: 100px; height: 100px"
       />
@@ -47,6 +47,33 @@ h5 {
 }
 .bgImg {
   position: relative;
+}
+.bgImg img {
+  border-radius: 2px;
+}
+.bgImg::before{
+  z-index: -1;
+  content: '';
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  right: -5px;
+  top: 5px;
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 2px;
+  opacity: 0.9;
+}
+.bgImg::after{
+  z-index: -2;
+  content: '';
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  right: -10px;
+  top: 10px;
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 2px;
+  opacity: 0.8;
 }
 .count {
   position: absolute;

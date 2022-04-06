@@ -4,27 +4,27 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <div class="img">
-            <img :src="playList.coverImgUrl + '?param=200y200'" />
+            <img :src="detail.coverImgUrl + '?param=200y200'" />
           </div>
           <div class="content">
-            <h1>{{ playList.name }}</h1>
+            <h1>{{ detail.name }}</h1>
             <div class="info clearfix">
               <div class="avatar">
                 <img :src="creator.avatarUrl + '?param=30y30'" />
               </div>
               <p class="nickName">{{ creator.nickname }}</p>
               <p class="time">
-                {{ utils.dateFormat(playList.createTime, "YYYY-MM-DD") }}创建
+                {{ utils.dateFormat(detail.createTime, "YYYY-MM-DD") }}创建
               </p>
             </div>
             <div class="bread">
               <span>标签：</span>
-              <a class="tag" v-for="item of playList.tags" :key="item">{{
+              <a class="tag" v-for="item of detail.tags" :key="item">{{
                 item
               }}</a>
             </div>
             <div class="disc">
-              <p class="ellipsis" v-html="playList.description"></p>
+              <p class="ellipsis" v-html="detail.description"></p>
               <span>全部 ></span>
             </div>
           </div>
@@ -34,6 +34,7 @@
               round
               size="small"
               icon="el-icon-video-play"
+              @click="playAllSong"
               >播放全部</el-button
             >
             <el-button
@@ -46,7 +47,31 @@
           </div>
         </div>
         <el-table :data="songs" stripe style="width: 100%">
-          <el-table-column type="index" label="序号" align="center" width="50">
+          <el-table-column label="序号" align="center" width="50">
+            <template slot-scope="{ row, $index }">
+              <div
+                :class="currentSong.id == row.id && playing ? 'playing' : ''"
+              >
+                <div class="index-container">
+                  <span class="num">{{ $index + 1 }}</span>
+                  <div class="playing-icon">
+                    <div class="line" style="animation-delay: -1.2s"></div>
+                    <div class="line"></div>
+                    <div class="line" style="animation-delay: -1.5s"></div>
+                    <div class="line" style="animation-delay: -0.9s"></div>
+                    <div class="line" style="animation-delay: -0.6s"></div>
+                  </div>
+                  <i
+                    class="iconfont icon-bofang1 play-btn"
+                    @click="playSong(row, $index)"
+                  ></i>
+                  <i
+                    class="iconfont icon-zanting1 pause-btn"
+                    @click="pauseSong(row, $index)"
+                  ></i>
+                </div>
+              </div>
+            </template>
           </el-table-column>
           <el-table-column label="歌曲" width="250">
             <template slot-scope="{ row }">
@@ -134,12 +159,13 @@
 
 <script>
 import { createSong } from "@/model/song";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   name: "SongListDetail",
   data() {
     return {
       // 歌单详情
-      playList: {},
+      detail: {},
       // 歌单创建者
       creator: {},
       // 歌曲列表
@@ -152,14 +178,18 @@ export default {
       comments: [],
     };
   },
+  computed: {
+    ...mapGetters(["currentSong", "playing"]),
+  },
   methods: {
+    ...mapActions(["selectPlay", "pausePlay", "playAll"]),
     // 歌单详情
     async getListDetail() {
       const id = this.$route.query.id;
       try {
         let res = await this.$api.getPlayListDetail(id);
         if (res.code == 200) {
-          this.playList = res.playlist;
+          this.detail = res.playlist;
           this.creator = res.playlist.creator;
           let trackIds = res.playlist.trackIds;
           this.getSongDetail(trackIds);
@@ -240,6 +270,20 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    playSong(item, index) {
+      this.selectPlay({
+        list: this.songs,
+        index,
+      });
+    },
+    pauseSong() {
+      this.pausePlay();
+    },
+    playAllSong() {
+      this.playAll({
+        list: this.songs,
+      });
     },
   },
   mounted() {
@@ -430,5 +474,89 @@ export default {
 .box-card {
   width: 100%;
   margin-bottom: 20px;
+}
+.index-container {
+  /* float: left; */
+  width: 30px;
+  height: 30px;
+  position: relative;
+  /* line-height: 30px; */
+  text-align: center;
+  /* margin-right: 10px; */
+}
+.index-container .num {
+  line-height: 30px;
+}
+.index-container .play-btn,
+.index-container .pause-btn {
+  line-height: 30px;
+  color: red;
+  font-size: 30px;
+  display: none;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.index-container .playing-icon {
+  display: none;
+  height: 16px;
+  width: 20px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  margin-left: 5px;
+  top: 7px;
+}
+.playing-icon .line {
+  width: 2px;
+  height: 100%;
+  margin-left: 2px;
+  background-color: #ff410f;
+  animation: play 0.9s linear infinite alternate;
+}
+.playing .index-container .play-btn {
+  display: none;
+}
+.playing .index-container .playing-icon {
+  display: flex;
+}
+.playing .index-container .num {
+  display: none;
+}
+.el-table--enable-row-hover
+  .el-table__body
+  tr:hover
+  > td.el-table__cell
+  .play-btn {
+  display: block !important;
+}
+.el-table--enable-row-hover
+  .el-table__body
+  tr:hover
+  > td.el-table__cell
+  .playing
+  .play-btn {
+  display: none !important;
+}
+.el-table--enable-row-hover
+  .el-table__body
+  tr:hover
+  > td.el-table__cell
+  .playing
+  .playing-icon {
+  display: none !important;
+}
+.el-table--enable-row-hover
+  .el-table__body
+  tr:hover
+  > td.el-table__cell
+  .playing
+  .pause-btn {
+  display: block !important;
+}
+.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell .num {
+  display: none !important;
 }
 </style>

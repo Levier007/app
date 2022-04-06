@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import songSheet from "./songSheet";
+import songSheet from "@/components/common/songSheet";
 export default {
   name: "RecommendSongList",
   components: {

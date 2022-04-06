@@ -44,3 +44,13 @@ export const deleteHistoryList = function({ commit }, song) {
 export const clearHistoryList = function({ commit }) {
     commit(types.SET_HISTORY_LIST, clearHistory())
 }
+
+// 播放全部
+export const playAll = function({ commit }, { list }) {
+    console.log(list)
+    commit(types.SET_PLAY_MODE, playMode.sequence)
+    commit(types.SET_SEQUENCE_LIST, list)
+    commit(types.SET_PLAYLIST, list)
+    commit(types.SET_CURRENT_INDEX, 0)
+    commit(types.SET_PLAYING_STATE, true)
+}
