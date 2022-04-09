@@ -19,9 +19,13 @@
             </div>
             <div class="bread">
               <span>标签：</span>
-              <a class="tag" v-for="item of detail.tags" :key="item">{{
-                item
-              }}</a>
+              <a
+                class="tag"
+                v-for="item of detail.tags"
+                :key="item"
+                @click="toCatAbout(item)"
+                >{{ item }}</a
+              >
             </div>
             <div class="disc">
               <p class="ellipsis" v-html="detail.description"></p>
@@ -285,6 +289,9 @@ export default {
         list: this.songs,
       });
     },
+    toCatAbout(cat) {
+      this.$router.push({ path: "/songlist", query: { cat } });
+    },
   },
   mounted() {
     this.getListDetail();
@@ -348,6 +355,7 @@ export default {
   margin: 0 5px;
   background-color: #fa2800;
   border-radius: 999em;
+  cursor: pointer;
 }
 .bread {
   height: 35px;

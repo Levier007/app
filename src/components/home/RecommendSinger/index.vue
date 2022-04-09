@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import singerItem from "./singerItem";
+import singerItem from "@/components/common/singerItem";
 export default {
   name: "RecommendSinger",
   components: { singerItem },

@@ -37,6 +37,7 @@
             <div class="info">
               <div class="top clearfix">
                 <div
+                  class="ellipsis"
                   style="
                     height: 20px;
                     float: left;
@@ -316,9 +317,9 @@ export default {
       // 若歌曲 5s 未播放，则认为超时，修改状态确保可以切换歌曲。
       clearTimeout(this.timer);
       this.timer = setTimeout(() => {
-        this.$message.warning('该歌曲暂时无法播放!')
+        this.$message.warning("该歌曲暂时无法播放!");
         this.songReady = true;
-        this.nextSong()
+        this.nextSong();
       }, 5000);
     },
     // 监听播放状态 isPlaying是当前playing的值（最新值）
@@ -795,12 +796,12 @@ export default {
   right: 10px;
   bottom: 80px;
 }
-.list{
+.list {
   overflow-y: scroll;
   height: 330px;
   /* max-height: calc(100% - 90px); */
   /* 解决子元素滚动条滑动到边缘后外层滚动条继续滑动问题 */
-  overscroll-behavior:contain
+  overscroll-behavior: contain;
 }
 .item {
   font-size: 14px;

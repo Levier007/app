@@ -8,7 +8,7 @@
       />
       <div class="count">
         <i class="iconfont icon-bofangqi-bofang"></i>
-        <span>{{ Math.round(item.playCount / 10000) }}万</span>
+        <span>{{ utils.tranNumber(item.playCount, 0) }}</span>
       </div>
     </div>
     <div class="info">
@@ -31,6 +31,7 @@ export default {
   height: 150px;
   margin: 0 25px 25px 25px;
   cursor: pointer;
+  list-style: none;
 }
 .info {
   margin-top: 10px;

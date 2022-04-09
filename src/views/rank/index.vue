@@ -4,7 +4,18 @@
       <h2 class="title">云音乐特色榜</h2>
       <ul class="list clearfix">
         <songSheet
-          v-for="item in ranks"
+          v-for="item in ranks.slice(0,4)"
+          :key="item.id"
+          :item="item"
+          @click.native="toDetail(item)"
+        ></songSheet>
+      </ul>
+    </div>
+    <div class="module">
+      <h2 class="title">全球媒体榜</h2>
+      <ul class="list clearfix">
+        <songSheet
+          v-for="item in ranks.slice(4)"
           :key="item.id"
           :item="item"
           @click.native="toDetail(item)"
@@ -57,14 +68,16 @@ export default {
 <style scoped>
 .rank {
   width: 100%;
+  padding-top: 75px;
 }
 .module {
   width: 1200px;
   margin: 20px auto;
-  padding-top: 75px;
 }
 .title {
   margin: 0 0 15px 0;
+  border-left: 3px solid red;
+  padding-left: 15px;
 }
 .list {
   width: 100%;
